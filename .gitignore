@@ -1,0 +1,16 @@
+*~
+*.swp
+*.pyc
+
+__pycache__/
+_build
+build
+build-*
+dist
+*.egg-info
+
+.env
+Vagrantfile
+my_references/
+playbook.yml
+upgrade_venv_packages.sh
