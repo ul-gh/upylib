@@ -1,7 +1,9 @@
 import sys
 import types
 from functools import wraps
-from PyQt5.QtCore import pyqtSlot
+from traceback import format_exception
+from PyQt5.QtCore import QTimer,pyqtSlot
+from PyQt5.QtWidgets import QMessageBox
 
 def pyqtCatchExceptionSlot(*args, catch=Exception, on_exception_emit=None):
     """This is a decorator for pyqtSlots where an exception
@@ -30,6 +32,24 @@ def pyqtCatchExceptionSlot(*args, catch=Exception, on_exception_emit=None):
                     pyqt_signal.emit(e, wrapper.__name__)
         return wrapper
     return slotdecorator
+
+
+def patch_pyqt_event_exception_hook(app):
+    """Monkey-patch sys.excepthook /inside/ a PyQt event, e.g. for handling
+    exceptions occuring in pyqtSlots.
+    """
+    def new_except_hook(etype, evalue, tb):
+        QMessageBox.critical(
+            None, "Error", "".join(format_exception(etype, evalue, tb)))
+
+    def patch_excepthook():
+        sys.excepthook = new_except_hook
+
+    t = QTimer()
+    t.setSingleShot(True)
+    t.timeout.connect(patch_excepthook)
+    t.start()
+    app.EVENT_PATCHING_TIMER = t
 
 
 def debug_trace():
