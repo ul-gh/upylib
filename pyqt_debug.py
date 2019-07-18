@@ -39,8 +39,9 @@ def patch_pyqt_event_exception_hook(app):
     exceptions occuring in pyqtSlots.
     """
     def new_except_hook(etype, evalue, tb):
-        QMessageBox.critical(
-            None, "Error", "".join(format_exception(etype, evalue, tb)))
+        text = "".join(format_exception(etype, evalue, tb))
+        print(text)
+        QMessageBox.critical(None, "Error", text)
 
     def patch_excepthook():
         sys.excepthook = new_except_hook
