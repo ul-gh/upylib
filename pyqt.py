@@ -23,6 +23,6 @@ def get_qobj_base_state(instance: object) -> dict:
 
     This is needed for using the pickle module.
     """
-    state = vars(self).items()
+    state = vars(instance).items()
     return {key: val for key, val in state if not isinstance(val, QObject)}
 
