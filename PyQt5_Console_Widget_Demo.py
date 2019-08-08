@@ -1,12 +1,12 @@
-from qtconsole.qt import QtGui
+#from qtconsole.qt import QtGui
+import sys
+from PyQt5.Qt import QApplication
+from PyQt5.QtWidgets import QVBoxLayout, QLineEdit
 from qtconsole.rich_jupyter_widget import RichJupyterWidget
 from qtconsole.inprocess import QtInProcessKernelManager
-from PyQt5.QtWidgets import QVBoxLayout,QLineEdit
 
 
 class ConsoleWidget(RichJupyterWidget):
-
-
     def __init__(self, customBanner=None, *args, **kwargs):
         super(ConsoleWidget, self).__init__(*args, **kwargs)
 
@@ -23,7 +23,7 @@ class ConsoleWidget(RichJupyterWidget):
         def stop():
             kernel_client.stop_channels()
             kernel_manager.shutdown_kernel()
-            guisupport.get_app_qt().exit()
+            #QApplication.instance().exit()
 
         self.exit_requested.connect(stop)
 
@@ -56,11 +56,9 @@ class ConsoleWidget(RichJupyterWidget):
 
 
 if __name__ == '__main__':
-    app = QtGui.QApplication([])
+    app = QApplication(sys.argv)
     widget = ConsoleWidget()
     widget.blafasel = "Möööt!"
     widget.show()
-    layout = QVBoxLayout()
-    widget.setLayout(layout)
     widget.push_vars({"w": widget})
     app.exec_()
