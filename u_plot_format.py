@@ -57,6 +57,25 @@ def axes_log_lin_engineering(ax):
     ax.yaxis.set_minor_locator(ticker.AutoMinorLocator())
 
 
+def axes_lin_lin_engineering(ax):
+    """Set x and y axis to linear scale
+    with engineering number format and SI prefixes
+    """
+    # Define axis labels format
+    format_eng = ticker.EngFormatter(places=1, unit=" ", sep="\N{THIN SPACE}")
+    # ticks_log_E6 = ticker.LogLocator(subs=(1.0, 1.5, 2.2, 3.3, 4.7, 6.8))
+    # equivalent: plt.ylabel(), plt.ylim(), plt.yscale() usw.
+    ax.set_yscale("linear")
+    ax.set_xscale("linear")
+    ax.tick_params(axis="both", which="major", length=6.0)
+    # x-axis ticks and labels
+    ax.xaxis.set_major_formatter(format_eng)
+    ax.xaxis.set_minor_locator(ticker.AutoMinorLocator())
+    # y-axis ticks and labels
+    ax.yaxis.set_major_formatter(format_eng)
+    ax.yaxis.set_minor_locator(ticker.AutoMinorLocator())
+
+
 def add_datacursor_engineering(plot_lines):
     """Add cursor with engineering number format and SI unit prefixes to the
     plot lines list object
@@ -72,7 +91,7 @@ def add_datacursor_engineering(plot_lines):
     datacursor(plot_lines, formatter=eng_xy)
 
 
-def plot_engineering(
+def _plot_engineering(
         ax,
         *args,
         title="Title",
@@ -93,9 +112,12 @@ def plot_engineering(
 
 def plot_log_log_engineering(ax, *args, **kwargs):
     axes_log_log_engineering(ax)
-    plot_engineering(ax, *args, **kwargs)
-
+    _plot_engineering(ax, *args, **kwargs)
 
 def plot_log_lin_engineering(ax, *args, **kwargs):
     axes_log_lin_engineering(ax)
-    plot_engineering(ax, *args, **kwargs)
+    _plot_engineering(ax, *args, **kwargs)
+
+def plot_lin_lin_engineering(ax, *args, **kwargs):
+    axes_lin_lin_engineering(ax)
+    _plot_engineering(ax, *args, **kwargs)
