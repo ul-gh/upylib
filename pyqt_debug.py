@@ -1,19 +1,21 @@
 import sys
 import types
+import logging
 from functools import wraps
 from traceback import format_exception
-from PyQt5.QtCore import QTimer,pyqtSlot
+from PyQt5.QtCore import QTimer, pyqtSlot
 from PyQt5.QtWidgets import QMessageBox
 
-def pyqtCatchExceptionSlot(*args, catch=Exception, on_exception_emit=None):
-    """This is a decorator for pyqtSlots where an exception
-    in user code is caught, printed and a optional pyqtSignal with
-    signature pyqtSignal(Exception, str) is emitted when that happens.
+def logExceptionSlot(*args, logger=None, catch=Exception, default_value=None):
+    """Catch all exceptions from this decorated function
+    and send to the specified logger instance.
+
+    This creates a pyqtSlot with *args.
 
     Arguments:
     *args:  any valid types for the pyqtSlot
     catch:  Type of the exception to catch, defaults to any exception
-    on_exception_emit:  name of a pyqtSignal to be emitted
+    default_value: Optional value to be returned on exception
     """
     if len(args) == 0 or isinstance(args[0], types.FunctionType):
         args = []
@@ -22,14 +24,14 @@ def pyqtCatchExceptionSlot(*args, catch=Exception, on_exception_emit=None):
         @wraps(func)
         def wrapper(*args, **kwargs):
             try:
-                func(*args)
+                func(*args, **kwargs)
             except catch as e:
-                print(f"In pyqtSlot: {wrapper.__name__}:\n"
-                      f"Caught exception: {e.__repr__()}")
-                if on_exception_emit is not None:
-                    # args[0] is instance of bound signal
-                    pyqt_signal = getattr(args[0], on_exception_emit)
-                    pyqt_signal.emit(e, wrapper.__name__)
+                if "logger" not in locals():
+                    logger = logging.getLogger(
+                            f"In pyqtSlot: {wrapper.__name__}")
+                logger.critical(
+                        f" Uncaught exception occurred:\n{e.__repr__()}")
+                return default_value
         return wrapper
     return slotdecorator
 
