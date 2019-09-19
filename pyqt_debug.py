@@ -1,6 +1,7 @@
 import sys
 import types
 import logging
+import traceback
 from functools import wraps
 from traceback import format_exception
 from PyQt5.QtCore import QTimer, pyqtSlot
@@ -28,8 +29,10 @@ def logExceptionSlot(*args, logger=None, catch=Exception, default_value=None):
             except catch as e:
                 logger = logging.getLogger(f"{wrapper.__module__}")
                 text = (f"\nIn pyqtSlot: {wrapper.__name__}\n"
-                        f"Uncaught exception of {type(e)} occurred:\n"
-                        f"{str(e)}")
+                        f"Uncaught exception of {type(e)} occurred:\n")
+                text += "\n".join(
+                        traceback.format_exception(Exception, e, e.__traceback__)
+                        )
                 logger.critical(text)
                 return default_value
         return wrapper
