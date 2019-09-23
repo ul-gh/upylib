@@ -25,7 +25,7 @@ def logExceptionSlot(*args, logger=None, catch=Exception, default_value=None):
         @wraps(func)
         def wrapper(*args, **kwargs):
             try:
-                func(*args, **kwargs)
+                return func(*args, **kwargs)
             except catch as e:
                 logger = logging.getLogger(f"{wrapper.__module__}")
                 text = (f"\nIn pyqtSlot: {wrapper.__name__}\n"
