@@ -1,0 +1,25 @@
+[build-system]
+requires = ["setuptools>=45", "setuptools_scm[toml]>=6.2"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "upylib"
+description = "Personal Python Library"
+readme = "README.md"
+license = {file = "LICENSE"}
+authors = [
+    {name="Ulrich Lukas", email="ul-gh@datenparkplatz.de"},
+]
+requires-python = ">=3.9"
+classifiers = [
+    "Programming Language :: Python :: 3",
+]
+dynamic = ["version"]
+dependencies = [
+    "numpy",
+]
+
+[project.urls]
+"Homepage" = "https://github.com/ul-gh/upylib"
+
+[tool.setuptools_scm]
